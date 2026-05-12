@@ -37,8 +37,8 @@ RequestsFlow.belongsTo(Users, { foreignKey: 'receiver_id', as: 'receiver' });
 
 // Muchos a Muchos
 
-Permissions.belongsToMany(Roles, { through: 'RolesPermissions', foreignKey: 'idPermission', otherKey: 'idRole' });
-Roles.belongsToMany(Permissions, { through: 'RolesPermissions', foreignKey: 'idRole', otherKey: 'idPermission' });
+Permissions.belongsToMany(Roles, { through: 'RolesPermissions', foreignKey: 'permission_id', otherKey: 'role_id' });
+Roles.belongsToMany(Permissions, { through: 'RolesPermissions', foreignKey: 'role_id', otherKey: 'permission_id' });
 
 export default {
     Sequelize: connection,

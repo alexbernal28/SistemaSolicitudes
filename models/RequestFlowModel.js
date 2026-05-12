@@ -1,7 +1,5 @@
 import connection from '../utils/DbConnection.js';
 import { DataTypes } from 'sequelize';
-import Users from './UserModel.js';
-import Requests from './RequestModel.js';
 
 const RequestsFlow = connection.define("Requests_flow", {
 
@@ -15,7 +13,7 @@ const RequestsFlow = connection.define("Requests_flow", {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Requests,
+            model: 'Requests',
             key: "id"
         },
         onDelete: "CASCADE",
@@ -25,7 +23,7 @@ const RequestsFlow = connection.define("Requests_flow", {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Users,
+            model: 'Users',
             key: "id"
         },
         onDelete: "CASCADE",

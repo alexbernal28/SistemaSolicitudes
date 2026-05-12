@@ -46,7 +46,7 @@ const Users = connection.define('Users', {
             model: "Departments",
             key: "id"
         },
-        onDelete: "SET NULL",
+        onDelete: "RESTRICT",
         onUpdate: "CASCADE"
     },
     supervisor_id: {

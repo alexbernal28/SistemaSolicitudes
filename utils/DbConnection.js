@@ -14,6 +14,7 @@ if (process.env.DB_DIALECT === "sqlite") {
       process.env.DB_FOLDER,
       process.env.DB_FILENAME,
     ),
+    logging: process.env.NODE_ENV === 'development' ? console.log : false
   });
   
 }
