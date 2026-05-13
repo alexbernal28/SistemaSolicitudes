@@ -1,12 +1,12 @@
-import context from "../context/AppContext";
+import context from "../context/AppContext.js";
 
 const { Roles, Permissions } = context;
 
 //Verificar que estes autenticado
 
 export const requireAuth = (req, res, next) => {
-    if (!req.session?.isAuthenticaded) {
-        res.flash("errors", "Debes iniciar sesión para ingresar.");
+    if (!req.session?.user) {
+        req.flash("errors", "Debes iniciar sesión para ingresar.");
         return res.redirect("/login");
     }
 
@@ -112,8 +112,10 @@ export const requireSameArea = async (req, res, next) => {
 // Redirigir si esta autenticado
 
 export const redirectIfAuthenticated = (req, res, next) => {
-    if (req.session?.isAuthenticaded) {
-        return res.redirect("/login");
+
+    if (req.session.isAuthenticated && req.session?.user) {
+        req.flash("errors", "Ya estás autenticado");
+        return res.redirect("/dashboard");
     }
 
     next();

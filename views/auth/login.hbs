@@ -1,0 +1,81 @@
+<div class="auth-card card">
+
+    <div class="auth-header">
+        <i class="bi bi-building"></i>
+        <h4 class="mt-2 mb-0 fw-semibold">Sistema de Solicitudes</h4>
+        <p class="mb-0 opacity-75 small">Inicia sesión para continuar</p>
+    </div>
+
+    <div class="auth-body">
+
+        {{! Mensajes de error }}
+        {{#if hasErrors}}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+            {{#each errors}}
+            <span>{{this}}</span>
+            {{/each}}
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {{/if}}
+
+        {{! Mensajes de éxito }}
+        {{#if hasSuccess}}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+
+            {{#each success}}
+            <span>{{this}}</span>
+            {{/each}}
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {{/if}}
+
+        <form action="/login" method="POST" novalidate>
+
+            <div class="mb-3">
+                <label for="username" class="form-label fw-medium">
+                    <i class="bi bi-person me-1"></i>Usuario
+                </label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Ingresa tu usuario"
+                    autocomplete="username" required>
+            </div>
+
+            <div class="mb-4">
+                <label for="password" class="form-label fw-medium">
+                    <i class="bi bi-lock me-1"></i>Contraseña
+                </label>
+
+                <div class="input-group">
+                    <input type="password" class="form-control" id="password" name="password"
+                        placeholder="Ingresa tu contraseña" autocomplete="current-password" required>
+                    <button class="btn btn-outline-secondary" type="button" id="togglePassword" tabindex="-1">
+                        <i class="bi bi-eye" id="toggleIcon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar sesión
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    const toggleBtn = document.getElementById('togglePassword');
+    const passwordEl = document.getElementById('password');
+    const toggleIcon = document.getElementById('toggleIcon');
+
+    toggleBtn.addEventListener('click', () => {
+        const isPassword = passwordEl.type === 'password';
+        passwordEl.type = isPassword ? 'text' : 'password';
+        toggleIcon.className = isPassword ? 'bi bi-eye-slash' : 'bi bi-eye';
+    });
+</script>

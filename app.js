@@ -6,6 +6,7 @@ import context from "./context/AppContext.js";
 import { projectRoot } from "./utils/Paths.js";
 import session from "express-session";
 import flash from "connect-flash";
+import authRoutes from "./routes/authRoutes.js";
 
 const app = express();
 
@@ -13,10 +14,9 @@ app.engine("hbs", engine({
     layoutsDir: "views/layouts",
     defaultLayout: 'layout',
     extname: "hbs",
-    // helpers: {
-    //     eq: eq,
-    //     estadoPedido: estadoPedido,
-    // }
+    helpers: {
+        eq: (a, b) => a === b,
+    }
 }));
 
 app.set("view engine", "hbs");
@@ -51,6 +51,13 @@ app.use((req, res, next) => {
     res.locals.hasSuccess = res.locals.success.length > 0; // Verificar si hay algun mensaje de success
     next();
 });
+
+app.use('/', authRoutes);
+
+app.use((req, res) => {
+    res.status(404).render("404", { title: "Page Not Found" });
+});
+
 
 try {
     // Sync the database and start the server
