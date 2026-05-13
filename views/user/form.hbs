@@ -1,0 +1,132 @@
+<div class="d-flex align-items-center gap-2 mb-4">
+    <a href="/users" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i>
+    </a>
+    <div>
+        <h4 class="mb-0 fw-semibold">
+            <i class="bi bi-person-{{#if EditMode}}gear{{else}}plus{{/if}} me-2 text-primary"></i>
+            {{title}}
+        </h4>
+        <small class="text-muted">
+            {{#if EditMode}}Modifica los datos del usuario{{else}}Completa los datos para registrar un nuevo
+            usuario{{/if}}
+        </small>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm" style="max-width: 640px;">
+    <div class="card-body p-4">
+        <form action="{{#if EditMode}}/users/{{editingUser.id}}/edit{{else}}/users/new{{/if}}" method="POST" novalidate>
+
+            {{! Nombre }}
+            <div class="mb-3">
+                <label class="form-label fw-medium">
+                    <i class="bi bi-person me-1"></i>Nombre completo
+                </label>
+                <input type="text" name="name" class="form-control" placeholder="Ej: Juan Pérez" {{#if
+                    EditMode}}value="{{editingUser.name}}" {{/if}} required>
+            </div>
+
+            {{! Username }}
+            <div class="mb-3">
+                <label class="form-label fw-medium">
+                    <i class="bi bi-at me-1"></i>Nombre de usuario
+                </label>
+                <input type="text" name="username" class="form-control" placeholder="Ej: jperez" {{#if
+                    EditMode}}value="{{editingUser.username}}" {{/if}} required>
+            </div>
+
+            {{! Contraseña }}
+            <div class="mb-3">
+                <label class="form-label fw-medium">
+                    <i class="bi bi-lock me-1"></i>Contraseña
+                    {{#if EditMode}}
+                    <span class="text-muted fw-normal small">(dejar vacío para no cambiar)</span>
+                    {{/if}}
+                </label>
+                <div class="input-group">
+                    <input type="password" name="password" id="password" class="form-control"
+                        placeholder="{{#if EditMode}}{Nueva contraseña (opcional){{else}}Mínimo 8 caracteres{{/if}}"
+                        {{#unless EditMode}}required{{/unless}}>
+                    <button class="btn btn-outline-secondary" type="button" id="togglePassword" tabindex="-1">
+                        <i class="bi bi-eye" id="toggleIcon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            {{! Rol }}
+            <div class="mb-3">
+                <label class="form-label fw-medium">
+                    <i class="bi bi-shield me-1"></i>Rol
+                </label>
+                <select name="role_id" class="form-select" required>
+                    <option value="">Selecciona un rol...</option>
+                    {{#each roles}}
+                    <option value="{{id}}" {{#if (eq id ../editingUser.role_id)}}selected{{/if}}>
+                        {{name}}
+                    </option>
+                    {{/each}}
+                </select>
+            </div>
+
+            {{! Departamento }}
+            <div class="mb-3">
+                <label class="form-label fw-medium">
+                    <i class="bi bi-building me-1"></i>Departamento
+                </label>
+                <select name="department_id" class="form-select" required>
+                    <option value="">Selecciona un departamento...</option>
+                    {{#each departments}}
+                    <option value="{{id}}" {{#if (eq id ../editingUser.department_id)}}selected{{/if}}>
+                        {{name}}
+                    </option>
+                    {{/each}}
+                </select>
+            </div>
+
+            {{! Supervisor (solo en editar) }}
+            {{#if EditMode}}
+            <div class="mb-4">
+                <label class="form-label fw-medium">
+                    <i class="bi bi-person-up me-1"></i>Supervisor
+                    <span class="text-muted fw-normal small">(opcional)</span>
+                </label>
+                <select name="supervisor_id" class="form-select">
+                    <option value="">Sin supervisor</option>
+                    {{#each supervisors}}
+                    <option value="{{id}}" {{#if (eq id ../editingUser.supervisor_id)}}selected{{/if}}>
+                        {{name}}
+                    </option>
+                    {{/each}}
+                </select>
+            </div>
+            {{/if}}
+
+            {{! Botones }}
+            <div class="d-flex gap-2 justify-content-end">
+                <a href="/users" class="btn btn-outline-secondary">
+                    Cancelar
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-{{#if EditMode}}floppy{{else}}person-plus{{/if}} me-1"></i>
+                    {{#if EditMode}}Guardar Cambios{{else}}Crear Usuario{{/if}}
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    const toggleBtn = document.getElementById('togglePassword');
+    const passwordEl = document.getElementById('password');
+    const toggleIcon = document.getElementById('toggleIcon');
+
+    toggleBtn.addEventListener('click', () => {
+        const isPassword = passwordEl.type === 'password';
+        passwordEl.type = isPassword ? 'text' : 'password';
+        toggleIcon.className = isPassword ? 'bi bi-eye-slash' : 'bi bi-eye';
+    });
+</script>

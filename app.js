@@ -7,6 +7,7 @@ import { projectRoot } from "./utils/Paths.js";
 import session from "express-session";
 import flash from "connect-flash";
 import authRoutes from "./routes/authRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.engine("hbs", engine({
     extname: "hbs",
     helpers: {
         eq: (a, b) => a === b,
+        substring: (str, start, end) => str?.substring(start, end) ?? ""
     }
 }));
 
@@ -53,6 +55,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/', authRoutes);
+app.use('/users', userRoutes);
 
 app.use((req, res) => {
     res.status(404).render("404", { title: "Page Not Found" });
