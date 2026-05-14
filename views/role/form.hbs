@@ -1,0 +1,96 @@
+<div class="d-flex align-items-center gap-2 mb-4">
+    <a href="/roles" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i>
+    </a>
+    <div>
+        <h4 class="mb-0 fw-semibold">
+            <i class="bi bi-shield me-2 text-primary"></i>{{title}}
+        </h4>
+        <small class="text-muted">
+            {{#if EditMode}}Modifica el rol y sus permisos{{else}}Define el nombre, nivel y permisos del nuevo
+            rol{{/if}}
+        </small>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm" style="max-width: 640px;">
+    <div class="card-body p-4">
+        <form action="{{#if EditMode}}/roles/{{rol.id}}/edit{{else}}/roles{{/if}}" method="POST" novalidate>
+
+            {{! Nombre }}
+            <div class="mb-3">
+                <label class="form-label fw-medium">
+                    <i class="bi bi-tag me-1"></i>Nombre del rol
+                </label>
+                <input type="text" name="name" class="form-control" placeholder="Ej: Subgerente" value="{{rol.name}}"
+                    required>
+            </div>
+
+            {{! Nivel }}
+            <div class="mb-4">
+                <label class="form-label fw-medium">
+                    <i class="bi bi-bar-chart-steps me-1"></i>Nivel jerárquico
+                </label>
+                <input type="number" name="level" class="form-control" placeholder="Ej: 1" value="{{rol.level}}" min="0"
+                    max="98" required>
+                <div class="form-text">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Mayor número = mayor autoridad. El Admin es 99.
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            {{! Permisos }}
+            <div class="mb-4">
+                <label class="form-label fw-medium d-flex justify-content-between">
+                    <span><i class="bi bi-key me-1"></i>Permisos</span>
+                    <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" id="toggleAll">
+                        Seleccionar todos
+                    </button>
+                </label>
+
+                <div class="border rounded p-3 bg-light">
+                    {{#each permissions}}
+                    <div class="form-check mb-2">
+                        <input class="form-check-input perm-check" type="checkbox" name="permissions" value="{{id}}"
+                            id="perm_{{id}}" {{#if checked}}checked{{/if}}>
+                        <label class="form-check-label" for="perm_{{id}}">
+                            <span class="fw-medium">{{name}}</span>
+                            {{#if description}}
+                            <small class="text-muted d-block">{{description}}</small>
+                            {{/if}}
+                        </label>
+                    </div>
+                    {{/each}}
+
+                    {{#unless permissions.length}}
+                    <p class="text-muted mb-0 small">No hay permisos disponibles</p>
+                    {{/unless}}
+                </div>
+            </div>
+
+            {{! Botones }}
+            <div class="d-flex gap-2 justify-content-end">
+                <a href="/roles" class="btn btn-outline-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-{{#if EditMode}}floppy{{else}}plus-circle{{/if}} me-1"></i>
+                    {{#if EditMode}}Guardar Cambios{{else}}Crear Rol{{/if}}
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    const toggleBtn = document.getElementById('toggleAll');
+    const checks = document.querySelectorAll('.perm-check');
+    let allSelected = false;
+
+    toggleBtn.addEventListener('click', () => {
+        allSelected = !allSelected;
+        checks.forEach(c => c.checked = allSelected);
+        toggleBtn.textContent = allSelected ? 'Deseleccionar todos' : 'Seleccionar todos';
+    });
+</script>
