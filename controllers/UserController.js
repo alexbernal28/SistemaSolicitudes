@@ -187,7 +187,7 @@ export const postEdit = async (req, res) => {
 
         await user.update(updatedData);
 
-        req.flash("success", `El usuario de {name} ha sido editado exitosamente`);
+        req.flash("success", `El usuario de ${name} ha sido editado exitosamente`);
         return res.redirect("/users");
 
     } catch (err) {

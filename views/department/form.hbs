@@ -1,0 +1,60 @@
+<div class="d-flex align-items-center gap-2 mb-4">
+    <a href="/departments" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i>
+    </a>
+    <div>
+        <h4 class="mb-0 fw-semibold">
+            <i class="bi bi-diagram-3 me-2 text-primary"></i>{{title}}
+        </h4>
+        <small class="text-muted">
+            {{#if EditMode}}Modifica los datos del departamento{{else}}Completa los datos del nuevo departamento{{/if}}
+        </small>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm" style="max-width: 540px;">
+    <div class="card-body p-4">
+        <form action="{{#if EditMode}}/departments/{{department.id}}/edit{{else}}/departments{{/if}}" method="POST"
+            novalidate>
+
+            {{! Nombre }}
+            <div class="mb-3">
+                <label class="form-label fw-medium">
+                    <i class="bi bi-building me-1"></i>Nombre del departamento
+                </label>
+                <input type="text" name="name" class="form-control" placeholder="Ej: Gerencia de Innovación"
+                    value="{{#if EditMode}}{{department.name}}{{/if}}" required>
+            </div>
+
+            {{! Departamento padre }}
+            <div class="mb-4">
+                <label class="form-label fw-medium">
+                    <i class="bi bi-diagram-2 me-1"></i>Dirección padre
+                    <span class="text-muted fw-normal small">(opcional — dejar vacío si es una Dirección)</span>
+                </label>
+                <select name="parent_id" class="form-select">
+                    <option value="">Sin padre (es una Dirección)</option>
+                    {{#each parents}}
+                    <option value="{{id}}" {{#if (eq id ../department.parent_id)}}selected{{/if}}>
+                        {{name}}
+                    </option>
+                    {{/each}}
+                </select>
+                <div class="form-text">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Si seleccionas una dirección padre, este departamento será una Gerencia.
+                </div>
+            </div>
+
+            {{! Botones }}
+            <div class="d-flex gap-2 justify-content-end">
+                <a href="/departments" class="btn btn-outline-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-{{#if EditMode}}floppy{{else}}plus-circle{{/if}} me-1"></i>
+                    {{#if EditMode}}Guardar Cambios{{else}}Crear Departamento{{/if}}
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>

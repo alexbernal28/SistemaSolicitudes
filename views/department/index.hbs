@@ -1,0 +1,80 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="mb-0 fw-semibold"><i class="bi bi-diagram-3 me-2 text-primary"></i>Departamentos</h4>
+        <small class="text-muted">Estructura organizacional del sistema</small>
+    </div>
+    <a href="/departments/new" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i>Nuevo Departamento
+    </a>
+</div>
+
+{{! Direcciones (parent_id = null) }}
+{{#each departments}}
+{{#unless parent_id}}
+<div class="card border-0 shadow-sm mb-3">
+    <div class="card-header bg-primary bg-opacity-10 border-0 d-flex justify-content-between align-items-center py-3">
+        <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-building text-primary fs-5"></i>
+            <span class="fw-semibold text-primary">{{name}}</span>
+            <span class="badge bg-primary bg-opacity-25 text-primary">Dirección</span>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="/departments/{{id}}/edit" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-pencil"></i>
+            </a>
+            <form action="/departments/{{id}}/delete" method="POST" class="d-inline">
+                <button type="submit" class="btn btn-sm btn-outline-danger"
+                    onclick="return confirm('¿Eliminar el departamento {{name}}?')">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {{! Hijos de esta dirección }}
+    {{#if children.length}}
+    <div class="card-body p-0">
+        <ul class="list-group list-group-flush">
+            {{#each children}}
+            <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-arrow-return-right text-muted"></i>
+                    <span>{{name}}</span>
+                    <span class="badge bg-secondary-subtle text-secondary">Gerencia</span>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="/departments/{{id}}/edit" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <form action="/departments/{{id}}/delete" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('¿Eliminar {{name}}?')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+    {{else}}
+    <div class="card-body text-muted small fst-italic py-2 px-4">
+        Sin gerencias asignadas
+    </div>
+    {{/if}}
+</div>
+{{/unless}}
+{{/each}}
+
+{{! Sin departamentos }}
+{{#unless departments.length}}
+<div class="card border-0 shadow-sm">
+    <div class="card-body text-center py-5 text-muted">
+        <i class="bi bi-diagram-3" style="font-size:2.5rem"></i>
+        <p class="mt-2 mb-0">No hay departamentos registrados</p>
+        <a href="/departments/new" class="btn btn-primary btn-sm mt-3">
+            Crear primer departamento
+        </a>
+    </div>
+</div>
+{{/unless}}

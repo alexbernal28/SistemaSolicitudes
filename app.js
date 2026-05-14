@@ -9,6 +9,7 @@ import flash from "connect-flash";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import roleRoutes from "./routes/roleRoutes.js";
+import departmentRoutes from "./routes/departmentRoutes.js";
 
 const app = express();
 
@@ -58,6 +59,7 @@ app.use((req, res, next) => {
 app.use('/', authRoutes);
 app.use('/users', userRoutes);
 app.use('/roles', roleRoutes);
+app.use('/departments', departmentRoutes);
 
 app.use((req, res) => {
     res.status(404).render("404", { title: "Page Not Found" });
