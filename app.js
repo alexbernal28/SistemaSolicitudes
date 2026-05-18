@@ -10,6 +10,7 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import roleRoutes from "./routes/roleRoutes.js";
 import departmentRoutes from "./routes/departmentRoutes.js";
+import requestRoutes from "./routes/requestRoutes.js";
 
 const app = express();
 
@@ -19,7 +20,19 @@ app.engine("hbs", engine({
     extname: "hbs",
     helpers: {
         eq: (a, b) => a === b,
-        substring: (str, start, end) => str?.substring(start, end) ?? ""
+        substring: (str, start, end) => str?.substring(start, end) ?? "",
+        truncate: (text, length) =>
+            !text ? "" :
+                text.length > length
+                    ? text.substring(0, length) + "..."
+                    : text,
+        formatDate: date =>
+            !date ? "" :
+                new Date(date).toLocaleDateString("es-DO", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric"
+                }),
     }
 }));
 
@@ -60,6 +73,7 @@ app.use('/', authRoutes);
 app.use('/users', userRoutes);
 app.use('/roles', roleRoutes);
 app.use('/departments', departmentRoutes);
+app.use('/requests', requestRoutes);
 
 app.use((req, res) => {
     res.status(404).render("404", { title: "Page Not Found" });

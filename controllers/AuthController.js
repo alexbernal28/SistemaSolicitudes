@@ -17,7 +17,7 @@ export const login = async (req, res) => {
 
         if (!username || !password) {
             req.flash("errors", "El usuario y la contraseña son requeridos.");
-            return res.redirect("/login");
+            return res.redirect("/");
         }
 
         //Buscar usuario con su rol
@@ -28,7 +28,7 @@ export const login = async (req, res) => {
 
         if (!user || !(await bcrypt.compare(password, user.password))) {
             req.flash("errors", "El usuario y/o contraseña son incorrectos.");
-            return res.redirect("/login");
+            return res.redirect("/");
         }
 
         req.session.user = buildSessionUser(user);
@@ -38,7 +38,7 @@ export const login = async (req, res) => {
             if (err) {
                 console.error("Error regenerando sesión:", err);
                 req.flash("errors", "Error al iniciar sesión");
-                return res.redirect("/login");
+                return res.redirect("/");
             }
 
             // Hay que reasignar porque regenerate limpia la sesión
@@ -51,7 +51,7 @@ export const login = async (req, res) => {
     } catch (err) {
         console.error("Error en el login: ", err);
         req.flash("errors", "Error interno del servidor");
-        res.redirect("/login");
+        res.redirect("/");
     }
 };
 
@@ -61,7 +61,7 @@ export const logout = (req, res) => {
         if (err) {
             console.error("Error al destruir la sesión:", err);
             req.flash("errors", "Error al cerrar la sesión");
-            return res.redirect("/login");
+            return res.redirect("/");
         }
     });
     res.redirect("/");

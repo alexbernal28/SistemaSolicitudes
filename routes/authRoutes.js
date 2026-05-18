@@ -5,9 +5,9 @@ import { requireAuth, redirectIfAuthenticated } from '../middlewares/auth.js';
 
 const router = Router();
 
-router.get("/", requireAuth);
+// router.get("/", requireAuth);
 router.get("/dashboard", requireAuth, index);
-router.get('/login', redirectIfAuthenticated, showLogin);
+router.get('/', redirectIfAuthenticated, showLogin);
 router.post('/login', redirectIfAuthenticated, login);
 router.post('/logout', requireAuth, logout)
 

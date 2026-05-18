@@ -1,0 +1,152 @@
+<div class="d-flex align-items-center gap-2 mb-4">
+    <a href="/requests" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i>
+    </a>
+    <div>
+        <h4 class="mb-0 fw-semibold">
+            <i class="bi bi-file-earmark-text me-2 text-primary"></i>{{title}}
+        </h4>
+        <small class="text-muted">Detalle de la solicitud</small>
+    </div>
+</div>
+
+<div class="row g-4" style="max-width: 860px;">
+
+    {{! ── Detalle de la solicitud ── }}
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h5 class="fw-semibold mb-0">{{request.subject}}</h5>
+
+                    {{#if (eq request.global_state "pendiente")}}
+                    <span class="badge bg-warning-subtle text-warning fs-6">
+                        <i class="bi bi-clock me-1"></i>Pendiente
+                    </span>
+                    {{else if (eq request.global_state "aprobada")}}
+                    <span class="badge bg-success-subtle text-success fs-6">
+                        <i class="bi bi-check-circle me-1"></i>Aprobada
+                    </span>
+                    {{else if (eq request.global_state "rechazada")}}
+                    <span class="badge bg-danger-subtle text-danger fs-6">
+                        <i class="bi bi-x-circle me-1"></i>Rechazada
+                    </span>
+                    {{/if}}
+                </div>
+
+                <div class="text-muted small mb-3">
+                    <i class="bi bi-person me-1"></i>Enviada por <strong>{{request.transmitter.name}}</strong>
+                    &nbsp;·&nbsp;
+                    <i class="bi bi-calendar me-1"></i>{{formatDate request.creation_date}}
+                </div>
+
+                {{#if request.description}}
+                <p class="mb-0">{{request.description}}</p>
+                {{else}}
+                <p class="text-muted fst-italic mb-0">Sin descripción</p>
+                {{/if}}
+
+            </div>
+        </div>
+    </div>
+
+    {{! ── Flujo activo (solo si está pendiente) ── }}
+    {{#if currentFlow}}
+    <div class="col-12">
+        <div class="card border-0 shadow-sm border-start border-warning border-3">
+            <div class="card-body p-4">
+
+                <h6 class="fw-semibold mb-3">
+                    <i class="bi bi-person-check me-2 text-warning"></i>
+                    En espera de respuesta
+                </h6>
+
+                <p class="text-muted small mb-0">
+                    Asignada a <strong>{{currentFlow.receiver.name}}</strong>
+                    desde {{formatDate currentFlow.assignment_date}}
+                </p>
+
+                {{! Acciones solo para el receptor actual }}
+                {{#if isReceiver}}
+                <hr class="my-3">
+                <div class="d-flex flex-wrap gap-2">
+
+                    {{! Aprobar }}
+                    <form action="/requests/{{request.id}}/approve" method="POST">
+                        <button type="submit" class="btn btn-success"
+                            onclick="return confirm('¿Aprobar esta solicitud?')">
+                            <i class="bi bi-check-circle me-1"></i>Aprobar
+                        </button>
+                    </form>
+
+                    {{! Escalar }}
+                    {{#if canEscalate}}
+                    <form action="/requests/{{request.id}}/escalate" method="POST">
+                        <button type="submit" class="btn btn-warning"
+                            onclick="return confirm('¿Escalar esta solicitud al siguiente nivel?')">
+                            <i class="bi bi-arrow-up-circle me-1"></i>Escalar
+                        </button>
+                    </form>
+                    {{/if}}
+
+                    {{! Rechazar con comentario (modal) }}
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                        <i class="bi bi-x-circle me-1"></i>Rechazar
+                    </button>
+
+                </div>
+                {{/if}}
+
+            </div>
+        </div>
+    </div>
+    {{/if}}
+
+    {{! ── Comentario de rechazo (si aplica) ── }}
+    {{#if (eq request.global_state "rechazada")}}
+    {{#if currentFlow.comment}}
+    <div class="col-12">
+        <div class="card border-0 shadow-sm border-start border-danger border-3">
+            <div class="card-body p-4">
+                <h6 class="fw-semibold text-danger mb-2">
+                    <i class="bi bi-chat-left-text me-2"></i>Motivo de rechazo
+                </h6>
+                <p class="mb-0">{{currentFlow.comment}}</p>
+            </div>
+        </div>
+    </div>
+    {{/if}}
+    {{/if}}
+
+</div>
+
+{{! ── Modal rechazo ── }}
+<div class="modal fade" id="rejectModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow">
+            <form action="/requests/{{request.id}}/reject" method="POST">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-semibold">
+                        <i class="bi bi-x-circle text-danger me-2"></i>Rechazar Solicitud
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label fw-medium">
+                        Comentario
+                        <span class="text-muted fw-normal small">(opcional)</span>
+                    </label>
+                    <textarea name="comment" class="form-control" rows="3"
+                        placeholder="Explica el motivo del rechazo..."></textarea>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-x-circle me-1"></i>Confirmar Rechazo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,112 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="mb-0 fw-semibold"><i class="bi bi-file-earmark-text me-2 text-primary"></i>Solicitudes</h4>
+        <small class="text-muted">
+            {{#if canSeeAll}}Todas las solicitudes del sistema{{else if canSeeArea}}Solicitudes de tu área{{else}}Tus
+            solicitudes{{/if}}
+        </small>
+    </div>
+    <a href="/requests/new" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i>Nueva Solicitud
+    </a>
+</div>
+
+{{! Filtros de estado }}
+<div class="d-flex gap-2 mb-3">
+    <button class="btn btn-sm btn-outline-secondary active filter-btn" data-filter="all">Todas</button>
+    <button class="btn btn-sm btn-outline-warning filter-btn" data-filter="pendiente">Pendientes</button>
+    <button class="btn btn-sm btn-outline-success filter-btn" data-filter="aprobada">Aprobadas</button>
+    <button class="btn btn-sm btn-outline-danger filter-btn" data-filter="rechazada">Rechazadas</button>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">#</th>
+                        <th>Asunto</th>
+                        {{#if canSeeAll}}
+                        <th>Emisor</th>
+                        {{/if}}
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th class="text-end pe-4">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="requestsTable">
+                    {{#each requests}}
+                    <tr class="request-row" data-state="{{global_state}}">
+
+                        <td class="ps-4 text-muted small">#{{id}}</td>
+
+                        <td>
+                            <div class="fw-medium">{{subject}}</div>
+                            {{#if description}}
+                            <small class="text-muted">{{truncate description 60}}</small>
+                            {{/if}}
+                        </td>
+
+                        {{#if ../canSeeAll}}
+                        <td class="small text-muted">
+                            <i class="bi bi-person me-1"></i>{{transmitter.name}}
+                        </td>
+                        {{/if}}
+
+                        <td>
+                            {{#if (eq global_state "pendiente")}}
+                            <span class="badge bg-warning-subtle text-warning">
+                                <i class="bi bi-clock me-1"></i>Pendiente
+                            </span>
+                            {{else if (eq global_state "aprobada")}}
+                            <span class="badge bg-success-subtle text-success">
+                                <i class="bi bi-check-circle me-1"></i>Aprobada
+                            </span>
+                            {{else if (eq global_state "rechazada")}}
+                            <span class="badge bg-danger-subtle text-danger">
+                                <i class="bi bi-x-circle me-1"></i>Rechazada
+                            </span>
+                            {{/if}}
+                        </td>
+
+                        <td class="small text-muted">
+                            {{formatDate creation_date}}
+                        </td>
+
+                        <td class="text-end pe-4">
+                            <a href="/requests/{{id}}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye me-1"></i>Ver
+                            </a>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+
+            {{#unless requests.length}}
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-file-earmark-text" style="font-size:2.5rem"></i>
+                <p class="mt-2 mb-0">No hay solicitudes registradas</p>
+                <a href="/requests/new" class="btn btn-primary btn-sm mt-3">
+                    Crear primera solicitud
+                </a>
+            </div>
+            {{/unless}}
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const filter = btn.dataset.filter;
+            document.querySelectorAll('.request-row').forEach(row => {
+                row.style.display = (filter === 'all' || row.dataset.state === filter) ? '' : 'none';
+            });
+        });
+    });
+</script>

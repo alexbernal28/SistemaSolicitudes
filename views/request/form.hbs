@@ -1,0 +1,43 @@
+<div class="d-flex align-items-center gap-2 mb-4">
+    <a href="/requests" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i>
+    </a>
+    <div>
+        <h4 class="mb-0 fw-semibold">
+            <i class="bi bi-plus-circle me-2 text-primary"></i>Nueva Solicitud
+        </h4>
+        <small class="text-muted">Tu solicitud será enviada al siguiente nivel jerárquico</small>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm" style="max-width: 640px;">
+    <div class="card-body p-4">
+        <form action="/requests" method="POST" novalidate>
+
+            <div class="mb-3">
+                <label class="form-label fw-medium">
+                    <i class="bi bi-card-heading me-1"></i>Asunto
+                </label>
+                <input type="text" name="subject" class="form-control" placeholder="Ej: Solicitud de vacaciones"
+                    required>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-medium">
+                    <i class="bi bi-text-left me-1"></i>Descripción
+                    <span class="text-muted fw-normal small">(opcional)</span>
+                </label>
+                <textarea name="description" class="form-control" rows="4"
+                    placeholder="Describe tu solicitud con más detalle..."></textarea>
+            </div>
+
+            <div class="d-flex gap-2 justify-content-end">
+                <a href="/requests" class="btn btn-outline-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-send me-1"></i>Enviar Solicitud
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
