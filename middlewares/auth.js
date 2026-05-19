@@ -7,7 +7,7 @@ const { Roles, Permissions } = context;
 export const requireAuth = (req, res, next) => {
     if (!req.session?.user) {
         req.flash("errors", "Debes iniciar sesión para ingresar.");
-        return res.redirect("/login");
+        return res.redirect("/");
     }
 
     next();

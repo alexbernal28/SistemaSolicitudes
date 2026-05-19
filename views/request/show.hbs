@@ -53,6 +53,7 @@
 
     {{! ── Flujo activo (solo si está pendiente) ── }}
     {{#if currentFlow}}
+    {{#if (eq request.global_state "pendiente")}}
     <div class="col-12">
         <div class="card border-0 shadow-sm border-start border-warning border-3">
             <div class="card-body p-4">
@@ -101,6 +102,7 @@
             </div>
         </div>
     </div>
+    {{/if}}
     {{/if}}
 
     {{! ── Comentario de rechazo (si aplica) ── }}

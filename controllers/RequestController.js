@@ -203,21 +203,38 @@ export const getFlow = async (req, res) => {
             return res.redirect("/requests");
         }
 
-        //Ultimo flujo pendiente
-        const currentFlow = await RequestsFlow.findOne({
-            where: {
-                request_id: request.id,
-                flow_state: requestFlowStatus.PENDING
-            },
-            include: [
-                {
-                    model: Users,
-                    as: "receiver",
-                    attributes: ["id", "name"]
-                }
-            ],
-            order: [["assignment_date", "DESC"]]
-        });
+        let currentFlow = null;
+
+        if (request.global_state === requestStatus.PENDING) {
+            currentFlow = await RequestsFlow.findOne({
+                where: {
+                    request_id: request.id,
+                    flow_state: requestFlowStatus.PENDING
+                },
+                include: [
+                    {
+                        model: Users,
+                        as: "receiver",
+                        attributes: ["id", "name"]
+                    }
+                ],
+                order: [["assignment_date", "DESC"]]
+            });
+        } else {
+            currentFlow = await RequestsFlow.findOne({
+                where: {
+                    request_id: request.id,
+                },
+                include: [
+                    {
+                        model: Users,
+                        as: "receiver",
+                        attributes: ["id", "name"]
+                    }
+                ],
+                order: [["assignment_date", "DESC"]]
+            });
+        }
 
         const isReceiver = currentFlow?.receiver_id === req.user.id;
         const isTransmitter = request.transmitter_id === req.user.id;
@@ -226,7 +243,7 @@ export const getFlow = async (req, res) => {
         // Verificar si se puede escalar
         let canEscalate = false;
 
-        if (isReceiver && currentFlow) {
+        if (isReceiver && currentFlow?.flow_state === requestFlowStatus.PENDING) {
             const next = await getNextReceiver(req.user.id);
             canEscalate = !!next;
         }
