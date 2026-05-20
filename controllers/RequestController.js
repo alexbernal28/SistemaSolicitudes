@@ -395,3 +395,51 @@ export const postEscalate = async (req, res) => {
         res.redirect(`/requests/${req.params.id}`);
     }
 }
+
+export const postResubmit = async (req, res) => {
+    try {
+        const { subject, description } = req.body;
+
+        //Buscar la solicitud rechazada y que pertenezca al usuario
+        const request = await Requests.findOne({
+            where: {
+                id: req.params.id,
+                transmitter_id: req.user.id,
+                global_state: requestStatus.REJECTED
+            }
+        });
+
+        if (!request) {
+            req.flash("errors", "Solicitud no encontrada o no tienes permisos.");
+            return res.redirect("/requests");
+        }
+
+        const nextReceiver = await getNextReceiver(req.user.id);
+
+        if (!nextReceiver) {
+            req.flash("errors", "No hay un receptor disponible para tu solicitud.");
+            return res.redirect(`/requests/${req.params.id}`);
+        }
+
+        //Actualizar la solicitud para ponerla pendiente
+        await request.update({
+            subject,
+            description: description || null,
+            global_state: requestStatus.PENDING
+        });
+
+        await RequestsFlow.create({
+            request_id: request.id,
+            receiver_id: nextReceiver.id,
+            flow_state: requestFlowStatus.PENDING
+        });
+
+        req.flash("success", "Solicitud corregida y reenviada correctamente.");
+        return res.redirect("/requests");
+
+    } catch (err) {
+        console.error("Error al reenviar:", err);
+        req.flash("errors", "Error al reenviar la solicitud");
+        res.redirect(`/requests/${req.params.id}`);
+    }
+}

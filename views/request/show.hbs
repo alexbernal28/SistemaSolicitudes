@@ -119,6 +119,14 @@
         </div>
     </div>
     {{/if}}
+
+    {{#if isTransmitter}}
+    <div class="col-12 mt-3">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#resubmitModal">
+            <i class="bi bi-arrow-clockwise me-1"></i>Corregir y Reenviar
+        </button>
+    </div>
+    {{/if}}
     {{/if}}
 
 </div>
@@ -146,6 +154,42 @@
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-danger">
                         <i class="bi bi-x-circle me-1"></i>Confirmar Rechazo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{! ── Modal Reenviar (Corrección) ── }}
+<div class="modal fade" id="resubmitModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow">
+            <form action="/requests/{{request.id}}/resubmit" method="POST">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-semibold">
+                        <i class="bi bi-arrow-clockwise text-primary me-2"></i>Corregir Solicitud
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info small">
+                        Edita la información según los comentarios de rechazo y vuelve a enviarla.
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-medium">Asunto</label>
+                        <input type="text" name="subject" class="form-control" value="{{request.subject}}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-medium">Descripción</label>
+                        <textarea name="description" class="form-control" rows="5"
+                            required>{{request.description}}</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-send me-1"></i>Reenviar Solicitud
                     </button>
                 </div>
             </form>
